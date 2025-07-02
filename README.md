@@ -43,12 +43,37 @@ IAM – (optional) for managing access roles.
 5.Query with Athena
 
 
-
-
 ## Requirments
  Baisc knowledge of AWS (IAM, S3 bucket,Glue,Athena,)
 
 
+## Test Cases
+1.Top 10 Tracks by Track Popularity
+SELECT track_name, artist_id, track_popularity
+FROM your_table_name
+WHERE track_popularity IS NOT NULL
+ORDER BY CAST(track_popularity AS INT) DESC
+LIMIT 10;
 
+2.Most Popular Albums by Album Popularity
+SELECT album_name, album_id, MAX(CAST(album_popularity AS INT)) AS popularity
+FROM your_table_name
+GROUP BY album_name, album_id
+ORDER BY popularity DESC
+LIMIT 10;
 
+3.-- Distribution of Track Popularity (Buckets)
+SELECT 
+  CASE 
+    WHEN CAST(track_popularity AS INT) BETWEEN 0 AND 20 THEN '0-20'
+    WHEN CAST(track_popularity AS INT) BETWEEN 21 AND 40 THEN '21-40'
+    WHEN CAST(track_popularity AS INT) BETWEEN 41 AND 60 THEN '41-60'
+    WHEN CAST(track_popularity AS INT) BETWEEN 61 AND 80 THEN '61-80'
+    WHEN CAST(track_popularity AS INT) BETWEEN 81 AND 100 THEN '81-100'
+    ELSE 'Unknown'
+  END AS popularity_range,
+  COUNT(*) AS track_count
+FROM data_warehouse
+GROUP BY 1
+ORDER BY 1;
 
